@@ -24,6 +24,10 @@ class Project(BaseModel):
     brute_force: bool
 
 
+# Modelo de datos 
+class ObjectDetection(BaseModel):
+    video_name : str                            # Nombre del video
+    objects: List[str]                          # Lista de objetos detectados 
 
 
 # Modelo de datos para la imagen que llega a la API

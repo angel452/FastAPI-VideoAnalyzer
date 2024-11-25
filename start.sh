@@ -25,26 +25,11 @@ print_error() {
     echo -e "${RED}$1${RESET}"
 }
 
-# Iniciar Redis
-print_info "Iniciando Redis..."
-redis-server --daemonize yes
-
-# Verificar que Redis está en ejecución
-print_info "Verificando que Redis está en ejecución..."
-sleep 2  # Esperar unos segundos para asegurar que Redis se haya iniciado
-
-# Intentar conectarse a Redis
-if redis-cli ping | grep -q "PONG"; then
-  print_success "Redis está funcionando correctamente."
-else
-  print_error "Error: No se puede conectar a Redis."
-  exit 1
-fi
 
 # Iniciar el servidor FastAPI (uvicorn)
 print_info "Iniciando FastAPI..."
 uvicorn main:app --reload --host 0.0.0.0 --port 8080 &
 
-# Iniciar el worker de Celery
-print_info "Iniciando worker de Celery..."
-celery -A app.tasks.celery_app worker --loglevel=info
+# # Iniciar el worker de Celery
+# print_info "Iniciando worker de Celery..."
+# celery -A app.tasks.celery_app worker --loglevel=info
