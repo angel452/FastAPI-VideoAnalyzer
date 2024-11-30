@@ -17,10 +17,10 @@ async def receive_frame(frame: FrameCharacteristics):
     logger.info(f"Recibiendo video: {frame.video_name}")
     logger.info(f"Datos completos del video: {frame.dict()}")
     
-    result = start_frame_processing(frame, frame.type)
+    result = start_frame_processing(frame)
         
     #return {"message": "El procesamiento del frame está en marcha", "task_id": task_id}
-    return {"message": result['message'], "results": result['results']}
+    return result
 
 # Ruta para consultar el estado de la tarea de procesamiento de un frame
 @router.post("/task_status/{task_id}")

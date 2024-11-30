@@ -1,6 +1,6 @@
 from app.tasks import process_frame
 from celery.result import AsyncResult
-from app.models import FrameData, ObjectDetection
+from app.models import FrameData, FrameCharacteristics
 from pyhive import hive
 import sys
 import logging
@@ -31,15 +31,8 @@ def execute_query(cursor, query):
         return []
 
 
-def start_frame_processing(frame : ObjectDetection):
-    """
-    Iniciar la tarea Celery para procesar el frame
-    
-    frame_data = {
-        "video_name": frame.video_name,
-        "objects_detected": frame.objects,
-    }
-    """
+def start_frame_processing(frame : FrameCharacteristics):
+
 
     """Inicia la tarea Celery para procesar el frame
     task = process_frame.apply_async(args=[frame_data]) # celerity 
@@ -67,7 +60,7 @@ def start_frame_processing(frame : ObjectDetection):
         query = ''
 
         if frame.type == 1:
-            query = f"SELECT video_name FROM scenarios WHERE video_id = {frame.video_name};"
+            query = f"SELECT video_name FROM scenarios WHERE environment_type = '{frame.environment_type}'"
 
         elif frame.type == 2:
             # Inicia la consulta básica
@@ -83,7 +76,7 @@ def start_frame_processing(frame : ObjectDetection):
 
         elif frame.type == 3:   
             # Inicia la consulta básica (sin filtros adicionales)
-            query = f"SELECT video_name, COUNT(*) AS object_count FROM objects WHERE object_name = '{object_name}'"
+            query = f"SELECT video_name, COUNT(*) AS object_count FROM objects WHERE object_name = '{frame.object_name}'"
 
             # Agrega el GROUP BY y ORDER BY
             query += " GROUP BY video_name ORDER BY object_count DESC;"

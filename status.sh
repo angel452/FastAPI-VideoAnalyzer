@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # URL de destino
-URL="http://ec2-3-93-151-72.compute-1.amazonaws.com"  # Cambia esto por la URL de tu API
+URL="ec2-3-83-246-89.compute-1.amazonaws.com:1234"  # Cambia esto por la URL de tu API
 
 # JSON_DATA01 (Tipo 1)
 JSON_DATA01=$(cat <<EOF
 {
   "type": 1,
   "video_name": "parking_lot_video_1",
-  "enviroment_type": "parking_lot",
+  "environment_type": "parking_lot",
   "object_name": null,
   "color": null,
   "proximity": null
@@ -25,7 +25,7 @@ JSON_DATA02=$(cat <<EOF
 {
   "type": 2,
   "video_name": "parking_lot_video_2",
-  "enviroment_type": "parking_lot",
+  "environment_type": "parking_lot",
   "object_name": "car",
   "color": "red",
   "proximity": "close"
@@ -42,7 +42,7 @@ JSON_DATA03=$(cat <<EOF
 {
   "type": 3,
   "video_name": "parking_lot_video_3",
-  "enviroment_type": "parking_lot",
+  "environment_type": "parking_lot",
   "object_name": "bike",
   "color": null,
   "proximity": null
@@ -59,7 +59,7 @@ JSON_DATA04=$(cat <<EOF
 {
   "type": 2,
   "video_name": "umbrella_video_1",
-  "enviroment_type": "outdoor",
+  "environment_type": "outdoor",
   "object_name": "umbrella",
   "color": "gray",
   "proximity": "near"
@@ -76,7 +76,7 @@ JSON_DATA05=$(cat <<EOF
 {
   "type": 2,
   "video_name": "umbrella_video_2",
-  "enviroment_type": "beach",
+  "environment_type": "beach",
   "object_name": "umbrella",
   "color": "gray",
   "proximity": "near"
@@ -93,7 +93,7 @@ JSON_DATA06=$(cat <<EOF
 {
   "type": 2,
   "video_name": "umbrella_video_3",
-  "enviroment_type": "park",
+  "environment_type": "park",
   "object_name": "umbrella",
   "color": "gray",
   "proximity": "near"
@@ -110,7 +110,7 @@ JSON_DATA07=$(cat <<EOF
 {
   "type": 2,
   "video_name": "umbrella_video_1",
-  "enviroment_type": "outdoor",
+  "environment_type": "outdoor",
   "object_name": "umbrella",
   "color": "gray",
   "proximity": "near",
@@ -128,7 +128,7 @@ JSON_DATA08=$(cat <<EOF
 {
   "type": 2,
   "video_name": "umbrella_video_2",
-  "enviroment_type": "beach",
+  "environment_type": "beach",
   "object_name": "umbrella",
   "color": "gray",
   "proximity": "near",
@@ -146,7 +146,7 @@ JSON_DATA09=$(cat <<EOF
 {
   "type": 2,
   "video_name": "umbrella_video_3",
-  "enviroment_type": "city",
+  "environment_type": "city",
   "object_name": "umbrella",
   "color": "gray",
   "proximity": "near",
