@@ -63,40 +63,31 @@ def start_frame_processing(frame : ObjectDetection):
         # Ejecutar la consulta en Hive. Aquí se usa la consulta desde el frame que se recibe
         #query = f"SELECT * FROM {frame.video_name} LIMIT 10"  # Modificar según sea necesario
         # Consulta en Hive que relaciona objetos, escenarios y características
-        query = f"""
-        SELECT 
-            o.object_name, 
-            o.x1, 
-            o.y1, 
-            o.x2, 
-            o.y2, 
-            o.rgb_color, 
-            o.proximity, 
-            o.sec AS object_sec, 
-            s.environment_type, 
-            s.description AS scenario_description, 
-            s.weather, 
-            s.time_of_day, 
-            s.terrain, 
-            s.crowd_level, 
-            s.lighting, 
-            f.description AS feature_description, 
-            f.color1, 
-            f.color2, 
-            f.size, 
-            f.orientation, 
-            f.type
-        FROM 
-            objects o
-        JOIN 
-            scenarios s ON o.video_name = s.video_name
-        JOIN 
-            features f ON o.video_name = f.video_name AND o.object_name = f.object_name
-        WHERE 
-            o.object_name = '{frame.objects}' 
-            AND o.video_name = '{frame.video_name}'
-        LIMIT 10;
-        """
+
+        query = ''
+
+        if frame.type == 1:
+            query = f"SELECT video_name FROM scenarios WHERE video_id = {frame.video_name};"
+
+        elif frame.type == 2:
+            # Inicia la consulta básica
+            query = f"SELECT video_name, sec FROM objects WHERE object_name = '{frame.object_name}'"
+
+            # Agrega el filtro para rgb_color si está presente
+            if frame.color:
+                query += f" AND color = '{frame.color}'"
+
+            # Agrega el filtro para proximity si está presente
+            if frame.proximity:
+                query += f" AND proximity = '{frame.proximity}'"
+
+        elif frame.type == 3:   
+            # Inicia la consulta básica (sin filtros adicionales)
+            query = f"SELECT video_name, COUNT(*) AS object_count FROM objects WHERE object_name = '{object_name}'"
+
+            # Agrega el GROUP BY y ORDER BY
+            query += " GROUP BY video_name ORDER BY object_count DESC;"
+
 
         logger.info(f"Ejecutando consulta: {query}")
 
@@ -116,38 +107,34 @@ def start_frame_processing(frame : ObjectDetection):
 
         # Formatear el resultado en JSON
         response_data = []
-        for row in resultados:
-            response_data.append({
-                "object_name": row[0],
-                "coordinates": {  # Corregir los dos puntos extra
-                    "x1": row[1],
-                    "y1": row[2],
-                    "x2": row[3],
-                    "y2": row[4],
-                },
-                "rgb_color": row[5],
-                "proximity": row[6],
-                "object_sec": row[7],
-                "scenario": {  # Corregir los dos puntos extra
-                    "environment_type": row[8],
-                    "scenario_description": row[9],  # Corregir el nombre de la clave
-                    "weather": row[10],
-                    "time_of_day": row[11],
-                    "terrain": row[12],
-                    "crowd_level": row[13],
-                    "lighting": row[14],
-                },
-                "feature": {  # Corregir los dos puntos extra
-                    "feature_description": row[15],  # Corregir el nombre de la clave
-                    "color1": row[16],
-                    "color2": row[17],
-                    "size": row[18],
-                    "orientation": row[19],
-                    "type": row[20],
-                }
-            })
+        
 
-        return {"message": "Consulta ejecutada correctamente", "results": response_data}
+        if frame.type == 1:
+            # Si `frame.type` es 1, la respuesta será solo con el `video_name`
+            for row in resultados:
+                response_data.append({
+                    "video_name": row[0]
+                })
+
+        elif frame.type == 2:
+            # Si `frame.type` es 2, se debe devolver el `video_name`, `sec`, y opcionales `rgb_color` y `proximity`
+            for row in resultados:
+                response_data.append({
+                    "video_name": row[0],
+                    "sec": row[1],
+                    "color": row[2] if len(row) > 2 else None,  # Si hay color, agregarlo
+                    "proximity": row[3] if len(row) > 3 else None   # Si hay proximidad, agregarlo
+                })
+
+        elif frame.type == 3:
+            # Si `frame.type` es 3, la respuesta es el conteo de objetos por video
+            for row in resultados:
+                response_data.append({
+                    "video_name": row[0],
+                    "object_count": row[1]
+                })
+
+        return response_data
     
     except Exception as e:
         logger.error(f"Error al procesar el frame: {e}")

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.models import FrameData, ObjectDetection
+from app.models import ObjectDetection, FrameCharacteristics
 from app.services import start_frame_processing, get_frame_task_status
 from app.logger_config import setup_logger 
 
@@ -8,20 +8,17 @@ logger = setup_logger(__name__)
 
 router = APIRouter()
 
-# Ruta para recibir un frame de video y empezar su procesamiento
-@router.post("/receive_frame")
-#async def receive_frame(frame: FrameData):
-async def receive_frame(frame: ObjectDetection):
-    """Recibe el video y comienza el procesamiento en segundo plano para generar un indice invertido"""
+# Ruta para recivir caracteristicas 
+@router.post("/receive_characteristics")
+async def receive_frame(frame: FrameCharacteristics):
+    """Recibe las características de un frame de video. Se tiene que clasificar
+    segun el tipo (1,2,3)"""
     
-    logger.info(f"Recibiendo video: {frame.video_name} - timestamp: {frame.timestamp}")
+    logger.info(f"Recibiendo video: {frame.video_name}")
     logger.info(f"Datos completos del video: {frame.dict()}")
     
-    #task_id = start_frame_processing(frame)
-    result = start_frame_processing(frame)
-    
-    #logger.info(f"Tarea iniciada con task_id: {task_id}")
-    
+    result = start_frame_processing(frame, frame.type)
+        
     #return {"message": "El procesamiento del frame está en marcha", "task_id": task_id}
     return {"message": result['message'], "results": result['results']}
 

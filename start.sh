@@ -28,7 +28,7 @@ print_error() {
 
 # Iniciar el servidor FastAPI (uvicorn)
 print_info "Iniciando FastAPI..."
-uvicorn main:app --reload --host 0.0.0.0 --port 8080 &
+uvicorn main:app --reload --host 0.0.0.0 --port 1234 &
 
 # # Iniciar el worker de Celery
 # print_info "Iniciando worker de Celery..."

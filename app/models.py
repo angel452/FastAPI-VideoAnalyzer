@@ -43,3 +43,24 @@ class DetectedObjects(BaseModel):
     timestamp : float                           # Tiempo exacto del frame (segundos)
     objects : List[str]                         # Lista de objetos detectados
     aditional_info: Optional[str] = None        # Información adicional
+
+"""
+Tipo1 (Escenario):
+    - video_name
+    - enviroment_type
+Tipo2 (Objeto):
+    - video_name
+    - object_name
+    - rgb_color
+    - proximity
+Tipo3 (Prioridad):
+    - video_name
+    - object_name
+"""
+class FrameCharacteristics(BaseModel):
+    type: int
+    video_name : str | None
+    enviroment_type: str | None
+    object_name: str | None
+    color: str | None
+    proximity: str | None

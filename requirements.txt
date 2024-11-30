@@ -2,3 +2,6 @@ fastapi
 uvicorn
 celery
 redis
+pyhive
+thrift
+thrift_sasl
