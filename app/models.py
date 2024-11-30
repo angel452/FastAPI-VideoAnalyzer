@@ -59,8 +59,8 @@ Tipo3 (Prioridad):
 """
 class FrameCharacteristics(BaseModel):
     type: int
-    video_name : str | None
-    enviroment_type: str | None
-    object_name: str | None
-    color: str | None
-    proximity: str | None
+    video_name: Optional[str]  
+    enviroment_type: Optional[str]
+    object_name: Optional[str]  
+    color: Optional[str] 
+    proximity: Optional[str] 
