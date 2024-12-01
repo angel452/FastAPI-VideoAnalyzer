@@ -76,10 +76,13 @@ def start_frame_processing(frame : FrameCharacteristics):
 
         elif frame.type == 3:   
             # Inicia la consulta básica (sin filtros adicionales)
-            query = f"SELECT video_name, COUNT(*) AS object_count FROM objects WHERE object_name = '{frame.object_name}'"
-
-            # Agrega el GROUP BY y ORDER BY
-            query += " GROUP BY video_name ORDER BY object_count DESC;"
+            query = f"""
+                SELECT video_name, sec, COUNT(*) AS object_count
+                FROM objects
+                WHERE object_name = '{frame.object_name}'
+                GROUP BY video_name, sec
+                ORDER BY object_count DESC;
+                """
 
 
         logger.info(f"Ejecutando consulta: {query}")
@@ -115,8 +118,6 @@ def start_frame_processing(frame : FrameCharacteristics):
                 response_data.append({
                     "video_name": row[0],
                     "sec": row[1],
-                    "color": row[2] if len(row) > 2 else None,  # Si hay color, agregarlo
-                    "proximity": row[3] if len(row) > 3 else None   # Si hay proximidad, agregarlo
                 })
 
         elif frame.type == 3:
@@ -124,7 +125,8 @@ def start_frame_processing(frame : FrameCharacteristics):
             for row in resultados:
                 response_data.append({
                     "video_name": row[0],
-                    "object_count": row[1]
+                    "sec": row[1],
+                    "object_count": row[2]
                 })
 
         return response_data
