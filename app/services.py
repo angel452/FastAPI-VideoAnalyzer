@@ -76,15 +76,8 @@ def start_frame_processing(frame : FrameCharacteristics):
 
         elif frame.type == 3:   
             # Inicia la consulta básica (sin filtros adicionales)
-            query = f"""
-                SELECT video_name, sec, COUNT(*) AS object_count
-                FROM objects
-                WHERE object_name = '{frame.object_name}'
-                GROUP BY video_name, sec
-                ORDER BY object_count DESC;
-                """
-
-
+            query = f"SELECT video_name, sec, COUNT(*) AS object_count FROM objects WHERE object_name = '{frame.object_name}' GROUP BY video_name, sec ORDER BY object_count DESC"
+    
         logger.info(f"Ejecutando consulta: {query}")
 
         # Obtener los resultados de la consulta
